@@ -21,9 +21,12 @@
   },
   "dependencies": {
     "@ant-design/pro-layout": "^6.5.0",
+    "@types/three": "^0.144.0",
     "react": "17.x",
     "react-dom": "17.x",
-    "umi": "^3.5.34"
+    "three": "^0.145.0",
+    "umi": "^3.5.34",
+    "url-loader": "^4.1.1"
   },
   "devDependencies": {
     "@types/react": "^17.0.0",
