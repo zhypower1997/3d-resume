@@ -1,13 +1,12 @@
 import styles from './index.less';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
-import { MTLLoader } from 'three/examples/jsm/loaders/MTLLoader';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
 import { useEffect } from 'react';
 import { useRef } from 'react';
 
-const path = require('../assets/models/plant.obj');
+const path = require('../assets/models/my_project.glb');
 
 export default function IndexPage() {
   const threeEle = useRef(null);
@@ -28,19 +27,29 @@ export default function IndexPage() {
     light.position.set(0, 200, 0);
     scene.add(light);
 
-    var MtlLoader = new MTLLoader();
-    var ObjLoader = new OBJLoader();
+    var ObjLoader = new GLTFLoader();
 
-    MtlLoader.load(
-      '../assets/models/Plastic_Cup-(Wavefront OBJ).mtl',
-      (materials) => {
-        materials.preload();
-        ObjLoader.setMaterials(materials);
-        ObjLoader.load(path.default, function (object) {
-          console.log(object);
-          object.children[0].scale.set(10, 10, 10);
-          scene.add(object);
-        });
+    ObjLoader.load(
+      path.default,
+      function (object) {
+        console.log(object);
+        object.scene.rotation.set(100, 0, 0);
+        object.scene.scale.set(50, 50, 50);
+        object.scene.position.set(
+          object.scene.position.x,
+          object.scene.position.y + 150,
+          object.scene.position.z + 100,
+        );
+
+        scene.add(object.scene);
+      },
+      (xhr) => {
+        // called while loading is progressing
+        console.log(`${(xhr.loaded / xhr.total) * 100}% loaded`);
+      },
+      (error) => {
+        // called when loading has errors
+        console.error('An error happened', error);
       },
     );
 
@@ -65,7 +74,7 @@ export default function IndexPage() {
   }, []);
   return (
     <div ref={threeEle}>
-      <h1 className={styles.title}>Page index</h1>
+      <h1 className={styles.title}>起步！</h1>
     </div>
   );
 }
