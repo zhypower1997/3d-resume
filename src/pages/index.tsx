@@ -6,10 +6,10 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { useEffect } from 'react';
 import { useRef } from 'react';
 
-const path = require('../assets/models/my_project.glb');
+const path = require('../assets/models/door.glb');
 
 export default function IndexPage() {
-  const threeEle = useRef(null);
+  let threeEle: any;
   const init = () => {
     const camera = new THREE.PerspectiveCamera(
       45,
@@ -20,12 +20,16 @@ export default function IndexPage() {
     camera.position.set(100, 200, 300); //位置
 
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x88ff54); //背景色
+    scene.background = new THREE.Color(0x999999); //背景色
     scene.fog = new THREE.Fog(0xa0a0a0, 200, 1000); //雾化
 
     const light = new THREE.HemisphereLight(0xffffff, 0x444444); //没有光线，将啥也看不到
     light.position.set(0, 200, 0);
     scene.add(light);
+
+    const light1 = new THREE.RectAreaLight(0xffffff, 1, 1000000); //没有光线，将啥也看不到
+    light1.position.set(500, 0, 200);
+    scene.add(light1);
 
     var ObjLoader = new GLTFLoader();
 
@@ -58,10 +62,11 @@ export default function IndexPage() {
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.shadowMap.enabled = true;
 
-    threeEle.current.appendChild(renderer.domElement);
+    threeEle.appendChild(renderer.domElement);
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.target.set(0, 100, 0);
     controls.update();
+    window.scene = scene;
     const render = () => {
       requestAnimationFrame(render);
       renderer.render(scene, camera);
@@ -73,8 +78,10 @@ export default function IndexPage() {
     init();
   }, []);
   return (
-    <div ref={threeEle}>
-      <h1 className={styles.title}>起步！</h1>
-    </div>
+    <div
+      ref={(ele) => {
+        threeEle = ele;
+      }}
+    ></div>
   );
 }
